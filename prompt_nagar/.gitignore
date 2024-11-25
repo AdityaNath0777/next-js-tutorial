@@ -32,6 +32,9 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 
+# uploading sample env variables for future references
+!.env.sample
+
 # vercel
 .vercel
 

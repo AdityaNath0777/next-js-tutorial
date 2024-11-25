@@ -206,3 +206,21 @@ export default Provider
 ```
 
 now let's create APIs
+steps:
+1) go to google cloud console: https://console.cloud.google.com
+2) create a new project: name it and leave the Location (oragnization) as "No oragnization" for now
+3) Select the project
+4) Go to APIs & Services
+  * OAuth conset screen
+  * enter app name, support mail, dev contact info
+  * leave app domain for now
+  * optional: app logo 
+5) Save and continue
+6) Create Credentials:
+  * OAuth Client ID
+  * app type:  web-app
+  * authorized js origin: http://localhost:3000
+  * authorized redirect URL: http://localhost:3000
+  * app name (optional)
+7) Click create
+8) Copy the credentials and save them into env variables through .env file
