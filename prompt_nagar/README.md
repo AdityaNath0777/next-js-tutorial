@@ -10,6 +10,20 @@
   npx create-next-app@latest
   ```
 
+  ***Note:*** I had to **downgrade** this next.js project from **v15 to v14** as next-auth is still not that much compatible with the new v15.
+  - for this I just deleted the node modules folder
+  - made changes in the package.json to install compatible versions of next and next-auth
+  ```json
+    {
+      "dependencies": {
+        "next": "14.2.14",
+        "next-auth": "^4.24.10",
+        "react": "^18",
+        "react-dom": "^18"
+      }
+    }
+  ```
+
   ```bash
   √ What is your project named? ... prompt_nagar
   √ Would you like to use TypeScript? ... No / Yes                    - No
@@ -153,74 +167,77 @@
          - Shows a profile image if logged in (placeholder).
          - Shows Sign In buttons for available providers if logged out.
 
-  ```js
-  {/* Desktop Navigation */}
-    <div className="sm:flex hidden">
-      {isUserLoggedIn ? (
-        <div className="flex gap-3 md:gap-5">
-          <Link> Create a Post </Link>
+```js
+{
+  /* Desktop Navigation */
+}
+<div className="sm:flex hidden">
+  {isUserLoggedIn ? (
+    <div className="flex gap-3 md:gap-5">
+      <Link> Create a Post </Link>
 
-          <button onClick={signOut}> SignOut </button>
+      <button onClick={signOut}> SignOut </button>
 
-          <Link href={"/profile"}>
-            <Image onClick={() => {}} />
-          </Link>
-        </div>
-      ) : (
-        <>
-
-        {/* if providers are available, it will get the vlaues in the form of array
-          * then map over it and displays the available options to sigin e.g. google, apple, fb, etc.
-         */}
-          {providers &&
-            Object.values(providers).map((provider) => (
-              <button
-                type="button"
-                key={provider.name}
-                onClick={() => signIn(provider.id)}
-                className="black_btn"
-              >
-                Sign In
-              </button>
-            ))}
-        </>
-      )}
+      <Link href={"/profile"}>
+        <Image onClick={() => {}} />
+      </Link>
     </div>
-  ```
+  ) : (
+    <>
+      {/* if providers are available, it will get the vlaues in the form of array
+       * then map over it and displays the available options to sigin e.g. google, apple, fb, etc.
+       */}
+      {providers &&
+        Object.values(providers).map((provider) => (
+          <button
+            type="button"
+            key={provider.name}
+            onClick={() => signIn(provider.id)}
+            className="black_btn"
+          >
+            Sign In
+          </button>
+        ))}
+    </>
+  )}
+</div>;
+```
 
-* Next Step: Authentication
+- Next Step: Authentication
+
 ```js
 "use client";
 
-import { SessionProvider } from "next-auth/react"
+import { SessionProvider } from "next-auth/react";
 
 const Provider = ({ children, session }) => {
-  return (
-    <SessionProvider session={session}>
-      {children}
-    </SessionProvider>
-  )
-}
+  return <SessionProvider session={session}>{children}</SessionProvider>;
+};
 
-export default Provider
+export default Provider;
 ```
 
 now let's create APIs
 steps:
-1) go to google cloud console: https://console.cloud.google.com
-2) create a new project: name it and leave the Location (oragnization) as "No oragnization" for now
-3) Select the project
-4) Go to APIs & Services
-  * OAuth conset screen
-  * enter app name, support mail, dev contact info
-  * leave app domain for now
-  * optional: app logo 
-5) Save and continue
-6) Create Credentials:
-  * OAuth Client ID
-  * app type:  web-app
-  * authorized js origin: http://localhost:3000
-  * authorized redirect URL: http://localhost:3000
-  * app name (optional)
-7) Click create
-8) Copy the credentials and save them into env variables through .env file
+
+1. go to google cloud console: https://console.cloud.google.com
+2. create a new project: name it and leave the Location (oragnization) as "No oragnization" for now
+3. Select the project
+4. Go to APIs & Services
+
+- OAuth consent screen
+- enter app name, support mail, dev contact info
+- leave app domain for now
+- optional: app logo
+
+5. Save and continue
+6. Create Credentials:
+
+- OAuth Client ID
+- app type: web-app
+- authorized js origin: http://localhost:3000
+- authorized redirect URL: http://localhost:3000
+- app name (optional)
+
+7. Click create
+8. Copy the credentials and save them into env variables through .env file
