@@ -1,36 +1,36 @@
 "use client";
 
-import {useState, useEffect, useCallback} from 'react'
-import PromptCard from './PromptCard';
-import Image from 'next/image';
+import { useState, useEffect, useCallback } from "react";
+import PromptCard from "./PromptCard";
+import Image from "next/image";
 
-const PromptCardList = ({ data, handleTagClick}) => {
+const PromptCardList = ({ data, handleTagClick }) => {
   return (
     <div className="prompt_layout mt-16">
       {data.map((post) => (
-        <PromptCard 
-          key = {post._id}
-          post = {post}
-          handleTagClick = {handleTagClick}
-         />
+        <PromptCard
+          key={post._id}
+          post={post}
+          handleTagClick={handleTagClick}
+        />
       ))}
     </div>
-  )
-}
+  );
+};
 const Feed = () => {
   const [searchText, setSearchText] = useState("");
-  const [shouldFetch, setShouldFetch] = useState(true)
-  const [posts, setPosts] = useState([])
+  const [shouldFetch, setShouldFetch] = useState(true);
+  const [posts, setPosts] = useState([]);
   const handleSearchChange = (e) => {
     setSearchText(e.target.value);
-  }
+  };
 
   // to get all the posts
   const fetchPost = useCallback(async () => {
     console.log("fetching..");
     try {
-      const response = await fetch("/api/prompt")
-      
+      const response = await fetch("/api/prompt");
+
       const data = await response.json();
 
       setPosts(data);
@@ -41,47 +41,56 @@ const Feed = () => {
     }
 
     setShouldFetch((prev) => !prev);
-  }, [] )
+  }, []);
 
-  useEffect(()=>{
-    if(shouldFetch) fetchPost();
-  }, [shouldFetch])
+  useEffect(() => {
+    if (shouldFetch) fetchPost();
+  }, [shouldFetch]);
+
+  const handleRefresh = () => {
+    setShouldFetch((prev) => !prev);
+  };
+
   return (
-    <section className='feed'>
-    <form className='relative flex-center w-full'>
-      <input
-       type="text"
-       placeholder='Search prompt, tag or username'
-       required
-       value={searchText}
-       onChange={handleSearchChange}
-       className='search_input peer'
-       />
-    </form>
-    
-      {
-        shouldFetch && (
+    <section className="feed">
+      <form className="relative flex-center w-full">
+        <input
+          type="text"
+          placeholder="Search prompt, tag or username"
+          required
+          value={searchText}
+          onChange={handleSearchChange}
+          className="search_input peer"
+        />
+      </form>
 
-    <p className='w-full flex flex-1 justify-end'>
-      <span>
-        <Image
-          src={"/assets/icons/loader.svg"}
-          alt='loading'
-          width={20}
-          height={20}
-          className='object-contain rounded-lg'
-         />
-      </span>
-    </p>
-        )
-      }
+      <p className="w-full flex flex-1 justify-end">
+        <span>
+          {shouldFetch ? (
+            <Image
+              src={"/assets/icons/loader.svg"}
+              alt="loading"
+              width={20}
+              height={20}
+              className="object-contain rounded-lg"
+            />
+          ) : (
+            <div onClick={handleRefresh}>
+              <Image
+                src={"/globe.svg"}
+                alt="refresh button"
+                width={20}
+                height={20}
+                className="object-contain rounded-lg"
+              />
+            </div>
+          )}
+        </span>
+      </p>
 
-    <PromptCardList
-     data = {posts}
-     handleTagClick = {() => {}}
-     />
+      <PromptCardList data={posts} handleTagClick={() => {}} />
     </section>
-  )
-}
+  );
+};
 
-export default Feed
+export default Feed;
