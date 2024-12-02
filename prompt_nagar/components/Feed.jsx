@@ -18,6 +18,7 @@ const PromptCardList = ({ data, handleTagClick}) => {
 }
 const Feed = () => {
   const [searchText, setSearchText] = useState("");
+  const [shouldFetch, setShouldFetch] = useState(true)
   const [posts, setPosts] = useState([])
   const handleSearchChange = (e) => {
     setSearchText(e.target.value);
@@ -36,10 +37,12 @@ const Feed = () => {
       } catch (error) {
         console.log(`ERROR :: Unable to fetch posts :: ${error}`);
       }
+
+      setShouldFetch(false);
     } 
 
-    fetchPost();
-  }, [])
+    if(shouldFetch) fetchPost();
+  }, [shouldFetch])
   return (
     <section className='feed'>
     <form className='relative flex-center w-full'>
