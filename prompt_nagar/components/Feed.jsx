@@ -1,7 +1,8 @@
 "use client";
 
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useCallback} from 'react'
 import PromptCard from './PromptCard';
+import Image from 'next/image';
 
 const PromptCardList = ({ data, handleTagClick}) => {
   return (
@@ -25,22 +26,24 @@ const Feed = () => {
   }
 
   // to get all the posts
+  const fetchPost = useCallback(async () => {
+    console.log("fetching..");
+    try {
+      const response = await fetch("/api/prompt")
+      
+      const data = await response.json();
+
+      setPosts(data);
+
+      console.log("All the posts has been fetched");
+    } catch (error) {
+      console.log(`ERROR :: Unable to fetch posts :: ${error}`);
+    }
+
+    setShouldFetch((prev) => !prev);
+  }, [] )
+
   useEffect(()=>{
-    const fetchPost = async () => {
-      try {
-        const response = await fetch("/api/prompt")
-        
-        const data = await response.json();
-
-        setPosts(data);
-        
-      } catch (error) {
-        console.log(`ERROR :: Unable to fetch posts :: ${error}`);
-      }
-
-      setShouldFetch(false);
-    } 
-
     if(shouldFetch) fetchPost();
   }, [shouldFetch])
   return (
@@ -55,6 +58,23 @@ const Feed = () => {
        className='search_input peer'
        />
     </form>
+    
+      {
+        shouldFetch && (
+
+    <p className='w-full flex flex-1 justify-end'>
+      <span>
+        <Image
+          src={"/assets/icons/loader.svg"}
+          alt='loading'
+          width={20}
+          height={20}
+          className='object-contain rounded-lg'
+         />
+      </span>
+    </p>
+        )
+      }
 
     <PromptCardList
      data = {posts}
