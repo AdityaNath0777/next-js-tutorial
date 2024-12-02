@@ -11,7 +11,7 @@ const Profile = ({ name, desc, data, handleEdit, handleDelete }) => {
       <div className="prompt_layout mt-10">
         {data.map((post) => (
           <PromptCard
-            key={post._id}
+            Key={post._id}
             post={post}
             handleEdit={() => handleEdit && handleEdit(post)}
             handleDelete={() => handleDelete && handleDelete(post)}

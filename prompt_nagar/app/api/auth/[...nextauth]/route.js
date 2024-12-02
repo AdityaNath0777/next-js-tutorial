@@ -35,7 +35,7 @@ const handler = NextAuth(
 
         // thus we don't need to keep running our server constantly
 
-        console.log(profile);
+        // console.log(profile);
         // but we do have to establish a connection to the database
         try {
           // sign-in logic
