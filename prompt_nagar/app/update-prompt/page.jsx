@@ -1,14 +1,23 @@
 // use client directive page
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { Form } from "@components";
 
+const GetPromptId = ({ setPromptId }) => {
+  const searchParams = useSearchParams();
+  const promptId = searchParams?.get("id");
+  setPromptId(promptId);
+
+  return <></>;
+};
+
 const EditPrompt = () => {
   const router = useRouter();
-  const promptId = useSearchParams().get("id");
+  // const searchParams = useSearchParams();
+  const [promptId, setPromptId] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [post, setPost] = useState({
     prompt: "",
@@ -19,21 +28,21 @@ const EditPrompt = () => {
     const fetchPost = async () => {
       const response = await fetch(`/api/prompt/${promptId}`);
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
       setPost({
         prompt: data.prompt,
         tag: data.tag,
       });
     };
-    
-    fetchPost();
+
+    if (promptId) fetchPost();
   }, [promptId]);
   // event handle to create a prompt
   const editPrompt = async (e) => {
     e.preventDefault();
     setSubmitting(true);
 
-    if(!promptId) return alert("Prompt Not Found!!!");
+    if (!promptId) return alert("Prompt Not Found!!!");
 
     try {
       const response = await fetch(`/api/prompt/${promptId}`, {
@@ -55,13 +64,16 @@ const EditPrompt = () => {
     }
   };
   return (
-    <Form
-      type="Edit"
-      post={post}
-      setPost={setPost}
-      submitting={submitting}
-      handleSubmit={editPrompt}
-    />
+    <Suspense fallback={<div>Loading...</div>}>
+      <GetPromptId setPromptId={setPromptId} />
+      <Form
+        type="Edit"
+        post={post}
+        setPost={setPost}
+        submitting={submitting}
+        handleSubmit={editPrompt}
+      />
+    </Suspense>
   );
 };
 
