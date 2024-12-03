@@ -8,7 +8,8 @@ export const GET = async (req, res) => {
     const revalidateTime = parseInt(process.env.REVALIDATE_TIME) || 1;
 
     const prompts = await Prompt.find({}).populate('creator');
-
+    console.log(prompts);
+    
     return new Response(JSON.stringify(prompts), {status: 200,
       headers: {
       'Cache-Control': `public, max-age=${revalidateTime}`
