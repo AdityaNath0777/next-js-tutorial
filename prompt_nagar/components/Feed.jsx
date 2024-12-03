@@ -35,6 +35,7 @@ const Feed = () => {
 
       console.log("Before: ", allPosts);
       setAllPosts(data);
+      console.log("reponse data last value: ", data[data.length]);
 
       console.log("All the posts has been fetched");
     } catch (error) {
