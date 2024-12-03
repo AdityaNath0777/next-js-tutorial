@@ -29,13 +29,15 @@ const Feed = () => {
   const fetchPost = useCallback(async () => {
     console.log("fetching..");
     try {
-      const response = await fetch("/api/prompt");
-
+      const response = await fetch("/api/prompt", {
+        cache: 'no-cache'
+      });
+      console.log("response: ", response);
       const data = await response.json();
 
       console.log("Before: ", allPosts);
       setAllPosts(data);
-      console.log("reponse data last value: ", data[data.length]);
+      console.log("response data last value: ", data[data.length]);
 
       console.log("All the posts has been fetched");
     } catch (error) {
