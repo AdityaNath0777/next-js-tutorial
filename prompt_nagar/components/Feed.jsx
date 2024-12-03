@@ -20,7 +20,7 @@ const PromptCardList = ({ data, handleTagClick }) => {
 const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [shouldFetch, setShouldFetch] = useState(true);
-  const [posts, setPosts] = useState([]);
+  const [allPosts, setAllPosts] = useState([]);
   const handleSearchChange = (e) => {
     setSearchText(e.target.value);
   };
@@ -33,14 +33,15 @@ const Feed = () => {
 
       const data = await response.json();
 
-      setPosts(data);
+      console.log("Before: ", allPosts);
+      setAllPosts(data);
 
       console.log("All the posts has been fetched");
     } catch (error) {
       console.log(`ERROR :: Unable to fetch posts :: ${error}`);
+    } finally {
+      setShouldFetch((prev) => !prev);
     }
-
-    setShouldFetch((prev) => !prev);
   }, []);
 
   useEffect(() => {
@@ -53,6 +54,10 @@ const Feed = () => {
 
   return (
     <section className="feed">
+      {console.log(
+        "last prompt After fetching/re-rendering: ",
+        allPosts[allPosts?.length - 1]?.prompt
+      )}
       <form className="relative flex-center w-full">
         <input
           type="text"
@@ -88,7 +93,7 @@ const Feed = () => {
         </span>
       </p>
 
-      <PromptCardList data={posts} handleTagClick={() => {}} />
+      <PromptCardList data={allPosts} handleTagClick={() => {}} />
     </section>
   );
 };
