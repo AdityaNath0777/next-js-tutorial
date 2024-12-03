@@ -17,16 +17,27 @@ const handler = NextAuth(
     callbacks: {
       async session({ session }) {
         // to know which user is currently online
-        const sessionUser = await User.findOne({
-          email: session?.user?.email,
-        });
-        
-        // update the current session's user id
-        session.user.id = sessionUser?._id?.toString();
+        try {
+          if(!session?.user?.email)
+            return session; // no user session
+
+          const sessionUser = await User.findOne({
+            email: session?.user?.email,
+          });
+          
+          // update the current session's user id
+          if(sessionUser) 
+            session.user.id = sessionUser?._id?.toString();
+
+          return session;
+        } catch (error) {
+          console.error("Error :: fetching user data :: ", error);
+          return session; // Return existing session or undefined
+        } 
 
         // console.log("session: ", session)
         // console.log("sessionUser: ", sessionUser)
-        return session;
+        // return session;
       },
 
       async signIn({ profile }) {
@@ -69,7 +80,7 @@ const handler = NextAuth(
           // }
           return true;
         } catch (error) {
-          console.log(`ERROR :: SIGN IN :: ${error}`);
+          console.log(`ERROR :: SIGN IN :: `, error.message);
           return false;
         }
       },
