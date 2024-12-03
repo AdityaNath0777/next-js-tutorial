@@ -1,5 +1,6 @@
 "use client";
 
+export const dynamic = "force-static";
 import { useState, useEffect, useCallback } from "react";
 import PromptCard from "./PromptCard";
 import Image from "next/image";
@@ -30,14 +31,14 @@ const Feed = () => {
     console.log("fetching..");
     try {
       const response = await fetch("/api/prompt", {
-        cache: 'no-cache'
+        cache: "no-cache",
       });
       console.log("response: ", response);
       const data = await response.json();
-
+      
       console.log("Before: ", allPosts);
       setAllPosts(data);
-      console.log("response data last value: ", data[data.length]);
+      console.log("response data last value: ", data[data.length - 1]);
 
       console.log("All the posts has been fetched");
     } catch (error) {
@@ -72,7 +73,7 @@ const Feed = () => {
         />
       </form>
 
-      <p className="w-full flex flex-1 justify-end">
+      <div className="w-full flex flex-1 justify-end">
         <span>
           {shouldFetch ? (
             <Image
@@ -94,7 +95,7 @@ const Feed = () => {
             </div>
           )}
         </span>
-      </p>
+      </div>
 
       <PromptCardList data={allPosts} handleTagClick={() => {}} />
     </section>
