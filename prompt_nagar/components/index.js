@@ -4,6 +4,7 @@ import Nav from "./Nav";
 import Profile from "./Profile";
 import PromptCard from "./PromptCard";
 import Provider from "./Provider";
+import RefreshButton from "./RefreshButton";
 
 export {
   Feed,
@@ -11,5 +12,6 @@ export {
   Nav,
   Profile,
   PromptCard,
-  Provider
+  Provider,
+  RefreshButton
 };

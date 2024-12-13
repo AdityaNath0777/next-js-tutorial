@@ -3,7 +3,7 @@
 export const dynamic = "force-static";
 import { useState, useEffect, useCallback } from "react";
 import PromptCard from "./PromptCard";
-import Image from "next/image";
+import RefreshButton from "./RefreshButton";
 
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
@@ -18,10 +18,11 @@ const PromptCardList = ({ data, handleTagClick }) => {
     </div>
   );
 };
+
 const Feed = () => {
   const [searchText, setSearchText] = useState("");
-  const [shouldFetch, setShouldFetch] = useState(true);
   const [allPosts, setAllPosts] = useState([]);
+
   const handleSearchChange = (e) => {
     setSearchText(e.target.value);
   };
@@ -35,26 +36,22 @@ const Feed = () => {
       });
       console.log("response: ", response);
       const data = await response.json();
-      
+
       console.log("Before: ", allPosts);
       setAllPosts(data);
       console.log("response data last value: ", data[data.length - 1]);
 
       console.log("All the posts has been fetched");
     } catch (error) {
-      console.log(`ERROR :: Unable to fetch posts :: ${error}`);
-    } finally {
-      setShouldFetch((prev) => !prev);
+      console.log(`ERROR :: Unable to fetch posts :: `, error);
     }
   }, []);
 
   useEffect(() => {
-    if (shouldFetch) fetchPost();
-  }, [shouldFetch]);
-
-  const handleRefresh = () => {
-    setShouldFetch((prev) => !prev);
-  };
+    if (allPosts?.length === 0) {
+      fetchPost();
+    }
+  }, []);
 
   return (
     <section className="feed">
@@ -74,27 +71,7 @@ const Feed = () => {
       </form>
 
       <div className="w-full flex flex-1 justify-end">
-        <span>
-          {shouldFetch ? (
-            <Image
-              src={"/assets/icons/loader.svg"}
-              alt="loading"
-              width={20}
-              height={20}
-              className="object-contain rounded-lg"
-            />
-          ) : (
-            <div onClick={handleRefresh}>
-              <Image
-                src={"/globe.svg"}
-                alt="refresh button"
-                width={20}
-                height={20}
-                className="object-contain rounded-lg"
-              />
-            </div>
-          )}
-        </span>
+        <RefreshButton onRefresh={fetchPost} />
       </div>
 
       <PromptCardList data={allPosts} handleTagClick={() => {}} />
