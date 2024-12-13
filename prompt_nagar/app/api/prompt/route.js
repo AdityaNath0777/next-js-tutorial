@@ -3,6 +3,7 @@ import { Prompt } from "@models/prompt.model";
 
 export const GET = async (req, res) => {
   const startTime = performance.now();
+  console.log("req: ", req.url); // to make this route dynamic
   try {
     await connectToDB();
 
