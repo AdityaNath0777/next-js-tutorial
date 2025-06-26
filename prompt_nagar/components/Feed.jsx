@@ -22,6 +22,10 @@ const Feed = () => {
   const [searchText, setSearchText] = useState("");
   const [shouldFetch, setShouldFetch] = useState(true);
   const [allPosts, setAllPosts] = useState([]);
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+  };
   const handleSearchChange = (e) => {
     setSearchText(e.target.value);
   };
@@ -35,7 +39,7 @@ const Feed = () => {
       });
       console.log("response: ", response);
       const data = await response.json();
-      
+
       console.log("Before: ", allPosts);
       setAllPosts(data);
       console.log("response data last value: ", data[data.length - 1]);
@@ -69,12 +73,9 @@ const Feed = () => {
           required
           value={searchText}
           onChange={handleSearchChange}
-          className="search_input peer"
+          className="search_input"
         />
-      </form>
-
-      <div className="w-full flex flex-1 justify-end">
-        <span>
+        <div className="absolute left-[102%] size-5 flex flex-1 justify-end">
           {shouldFetch ? (
             <Image
               src={"/assets/icons/loader.svg"}
@@ -94,8 +95,8 @@ const Feed = () => {
               />
             </div>
           )}
-        </span>
-      </div>
+        </div>
+      </form>
 
       <PromptCardList data={allPosts} handleTagClick={() => {}} />
     </section>
