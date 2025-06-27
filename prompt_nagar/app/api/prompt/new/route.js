@@ -5,6 +5,8 @@ export const POST = async (req, res) => {
   const { userId, prompt, tag } = await req.json();
 
   try {
+    if(!userId || !prompt || !tag)
+      throw new Error("Some parameters are unavailable...");
     await connectToDB();
 
     const newPrompt = new Prompt({

@@ -9,7 +9,8 @@ const Home = () => {
         <span className="orange_gradient text-center"> AI-Powered Prompts</span>
       </h1>
       <p className="desc text-center">
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Itaque voluptas nesciunt fuga repellat iure quas neque dicta. Ea, aspernatur quis.
+        A platform to share your favorite and personalized prompts with everyone
+        all over the world.
       </p>
 
       <Feed />

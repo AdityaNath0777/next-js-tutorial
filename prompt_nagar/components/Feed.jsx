@@ -3,7 +3,7 @@
 export const dynamic = "force-static";
 import { useState, useEffect, useCallback } from "react";
 import PromptCard from "./PromptCard";
-import RefreshButton from "./RefreshButton";
+import Image from "next/image";
 
 const PromptCardList = ({ data, handleTagClick }) => {
   return (
@@ -18,11 +18,14 @@ const PromptCardList = ({ data, handleTagClick }) => {
     </div>
   );
 };
-
 const Feed = () => {
   const [searchText, setSearchText] = useState("");
+  const [shouldFetch, setShouldFetch] = useState(true);
   const [allPosts, setAllPosts] = useState([]);
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+  };
   const handleSearchChange = (e) => {
     setSearchText(e.target.value);
   };
@@ -43,15 +46,19 @@ const Feed = () => {
 
       console.log("All the posts has been fetched");
     } catch (error) {
-      console.log(`ERROR :: Unable to fetch posts :: `, error);
+      console.log(`ERROR :: Unable to fetch posts :: ${error}`);
+    } finally {
+      setShouldFetch((prev) => !prev);
     }
   }, []);
 
   useEffect(() => {
-    if (allPosts?.length === 0) {
-      fetchPost();
-    }
-  }, []);
+    if (shouldFetch) fetchPost();
+  }, [shouldFetch]);
+
+  const handleRefresh = () => {
+    setShouldFetch((prev) => !prev);
+  };
 
   return (
     <section className="feed">
@@ -66,13 +73,30 @@ const Feed = () => {
           required
           value={searchText}
           onChange={handleSearchChange}
-          className="search_input peer"
+          className="search_input"
         />
+        <div className="absolute left-[102%] size-5 flex flex-1 justify-end">
+          {shouldFetch ? (
+            <Image
+              src={"/assets/icons/loader.svg"}
+              alt="loading"
+              width={20}
+              height={20}
+              className="object-contain rounded-lg"
+            />
+          ) : (
+            <div onClick={handleRefresh}>
+              <Image
+                src={"/globe.svg"}
+                alt="refresh button"
+                width={20}
+                height={20}
+                className="object-contain rounded-lg"
+              />
+            </div>
+          )}
+        </div>
       </form>
-
-      <div className="w-full flex flex-1 justify-end">
-        <RefreshButton onRefresh={fetchPost} />
-      </div>
 
       <PromptCardList data={allPosts} handleTagClick={() => {}} />
     </section>
