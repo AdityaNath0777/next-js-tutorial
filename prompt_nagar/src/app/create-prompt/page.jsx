@@ -1,20 +1,22 @@
 // use client directive page
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 import { Form } from "@/components";
 
+const initialPostData = {
+  prompt: "",
+  tag: ""
+}
+
 const CreatePrompt = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const [submitting, setSubmitting] = useState(false);
-  const [post, setPost] = useState({
-    prompt: "",
-    tag: "",
-  });
+  const [post, setPost] = useState(initialPostData);
 
   // event handle to create a prompt
   const createPrompt = async (e) => {
@@ -34,7 +36,8 @@ const CreatePrompt = () => {
 
       if (response.ok) {
         // go to home page
-        router.push("/");
+        // router.push("/");
+        setPost(initialPostData);
       }
     } catch (error) {
       console.log(`Error :: prompt creation failed :: ${error}`);

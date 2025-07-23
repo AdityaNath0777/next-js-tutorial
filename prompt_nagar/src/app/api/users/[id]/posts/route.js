@@ -1,5 +1,5 @@
-import { connectToDB } from "@src/utils/database";
-import { Prompt } from "@src/models/prompt.model";
+import { connectToDB } from "@/utils/database";
+import { Prompt } from "@/models/prompt.model";
 
 export const GET = async (req, { params }) => {
   const startTime = performance.now();

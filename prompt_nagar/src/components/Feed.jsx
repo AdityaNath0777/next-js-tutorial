@@ -1,44 +1,68 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import PromptCardList from "./PromptCardList";
 import LoadMoreButton from "./LoadMoreButton";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
 import SearchBar from "./SearchBar";
 
-const Feed = ({ initialPosts }) => {
-  // const router = useRouter();
-  
-  // const [searchText, setSearchText] = useState("");
+const Feed = ({ initialPosts, hasMore = true }) => {
   const [allPosts, setAllPosts] = useState(initialPosts || []);
+  const [hasMorePosts, setHasMorePosts] = useState(hasMore);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  // const handleSearchSubmit = (e) => {
-  //   e.preventDefault();
-  // };
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 5,
+  });
 
-  // const handleSearchChange = (e) => {
-  //   setSearchText(e.target.value);
+  const loadMorePosts = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `/api/prompt?page=${(pagination?.page || 1) + 1}&limit=${
+          pagination?.limit || 5
+        }`
+      );
 
-  // };
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch more posts, Status: ${response.status}`
+        );
+      }
+
+      const newPosts = await response.json();
+
+      const hasMore = newPosts.length === pagination.limit + 1;
+
+      const postsToAdd = hasMore
+        ? newPosts.slice(0, pagination.limit)
+        : newPosts;
+
+      setPagination((prev) => ({ ...prev, page: prev.page + 1 }));
+      setAllPosts((prev) => [...prev, ...postsToAdd]);
+
+      setHasMorePosts(hasMore);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Something went wrong.";
+      setError(msg);
+      console.error(`Unable to load more posts`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <section className="feed mb-10">
-      {/* <form className="relative flex-center w-full">
-        <input
-          type="text"
-          placeholder="Search prompt, tag or username"
-          required
-          value={searchText}
-          onChange={handleSearchChange}
-          className="search_input"
-        />
-      </form> */}
       <SearchBar />
 
       <PromptCardList data={allPosts} handleTagClick={() => {}} />
 
-      <LoadMoreButton onLoad={() => console.log("click on load more")} />
+      {hasMorePosts && (
+        <LoadMoreButton onLoad={loadMorePosts}>
+          {isLoading ? "Loading..." : "Load More"}
+        </LoadMoreButton>
+      )}
     </section>
   );
 };

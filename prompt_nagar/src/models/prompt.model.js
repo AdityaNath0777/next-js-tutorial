@@ -1,4 +1,4 @@
-import { Schema, models, model } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const PromptSchema = new Schema(
   {
@@ -20,4 +20,5 @@ const PromptSchema = new Schema(
 );
 
 // export const Prompt = model("Prompt", PromptSchema);
-export const Prompt = models.Prompt || model("Prompt", PromptSchema);
+export const Prompt =
+  mongoose.models.Prompt || mongoose.model("Prompt", PromptSchema);

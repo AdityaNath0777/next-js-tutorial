@@ -5,7 +5,7 @@ const PromptCardList = ({ data, handleTagClick }) => {
     <div className="prompt_layout mt-16">
       {data.map((post) => (
         <PromptCard
-          key={post._id}
+          key={`prompt-${post._id}`}
           post={post}
           handleTagClick={handleTagClick}
         />

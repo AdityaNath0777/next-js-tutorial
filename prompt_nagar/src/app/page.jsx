@@ -4,8 +4,12 @@ import { getPosts } from "@lib/prompts/prompts.service";
 const Home = async () => {
   let posts;
   let error = false;
+  let limit = 5;
+  let hasMore = false;
   try {
-    posts = await getPosts();
+    posts = await getPosts(1, 5);
+    hasMore = posts.length > limit;
+    posts = posts.slice(0, 5);
   } catch (error) {
     posts = [];
     error = true;
@@ -25,7 +29,7 @@ const Home = async () => {
       {error ? (
         <p>Something went wrong while trying to fetch posts, retry later.</p>
       ) : (
-        <Feed initialPosts={posts} />
+        <Feed initialPosts={posts} hasMore={hasMore} />
       )}
     </section>
   );
